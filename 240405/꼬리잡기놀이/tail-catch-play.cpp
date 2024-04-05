@@ -147,7 +147,7 @@ void moveTeam() {
 		for (int dir = 0; dir < 4; dir++) {
 			int nextRow = nowHead.row + dr[dir];
 			int nextCol = nowHead.col + dc[dir];
-			if (Map[nextRow][nextCol] == 4) {
+			if (Map[nextRow][nextCol] == 4 || Map[nextRow][nextCol]==3) {
 
 				Map[nowHead.row][nowHead.col] = 2;
 				teamInfo[i].nowHead.row = nextRow;
@@ -159,7 +159,7 @@ void moveTeam() {
 
 		//꼬리
 		Map[nowBeforeTail.row][nowBeforeTail.col] = 3;
-		Map[nowTail.row][nowTail.col] = 4;
+		if(Map[nowTail.row][nowTail.col]==3) Map[nowTail.row][nowTail.col] = 4;   //이미 1이면 Pass 꼬리물기
 		teamInfo[i].nowTail.row = nowBeforeTail.row;
 		teamInfo[i].nowTail.col = nowBeforeTail.col;
 
