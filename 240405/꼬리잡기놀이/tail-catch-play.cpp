@@ -166,8 +166,8 @@ void moveTeam() {
 
 		//꼬리 바로 전
 		for (int dir = 0; dir < 4; dir++) {
-			int nextRow = nowHead.row + dr[dir];
-			int nextCol = nowHead.col + dc[dir];
+			int nextRow = nowBeforeTail.row + dr[dir];
+			int nextCol = nowBeforeTail.col + dc[dir];
 			if (Map[nextRow][nextCol] == 2) {
 
 				teamInfo[i].nowBeforeTail.row = nextRow;
@@ -245,7 +245,7 @@ void solution() {
 
 		moveTeam();
 		int nowBallway = round % (4 * N);
-		bool getHit = true;
+		bool getHit = false;
 		pos getHitPerson;
 		if (nowBallway > 0 && nowBallway <= N) {
 			
