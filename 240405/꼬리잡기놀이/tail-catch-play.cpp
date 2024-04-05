@@ -17,6 +17,7 @@ struct Team {
 	pos nowHead;
 	pos nowBeforeTail;
 	pos nowTail;
+	int memberNum;
 };
 
 const int dr[4] = { -1,1,0,0 };
@@ -54,7 +55,7 @@ void findRail(int row, int col, int railNum) {
 			int nextRow = nowRow + dr[dir];
 			int nextCol = nowCol + dc[dir];
 			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
-			if (Map[nextRow][nextCol] == 0 || Map[nextRow][nextCol]==4) continue;
+			if (Map[nextRow][nextCol] == 0 || Map[nextRow][nextCol] == 4||Map[nextRow][nextCol]==3) continue;
 			if (Visited[nextRow][nextCol]) continue;
 			Visited[nextRow][nextCol] = true;
 			TeamNumInfo[nextRow][nextCol] = teamNum;
@@ -63,7 +64,15 @@ void findRail(int row, int col, int railNum) {
 		}
 	}
 
-	
+	for (int dir = 0; dir < 4; dir++) {
+		int nextRow = nowRail[nowRail.size() - 1].row + dr[dir];
+		int nextCol = nowRail[nowRail.size() - 1].col + dc[dir];
+		if (Map[nextRow][nextCol] == 3) {
+			nowRail.push_back({ nextRow, nextCol });
+			break;
+		}
+
+	}
 
 
 	Team t;
@@ -71,15 +80,16 @@ void findRail(int row, int col, int railNum) {
 	t.nowHead = nowRail[0];
 	t.nowTail = nowRail[nowRail.size()-1];
 	t.nowBeforeTail = nowRail[nowRail.size() - 2];
+	t.memberNum = nowRail.size();
 	//사람들의 1번부터 3번까지 순서대로 담겨있음
 	//team 정보 넣기
 
 
 	teamInfo.push_back(t);
-	teamNum++;
+	
 
 	q.push(t.nowTail);
-
+	TeamNumInfo[t.nowTail.row][t.nowTail.col] = teamNum;
 	while (!q.empty()) {
 		int nowRow = q.front().row;
 		int nowCol = q.front().col;
@@ -95,10 +105,11 @@ void findRail(int row, int col, int railNum) {
 				Visited[nextRow][nextCol] = true;
 				nowRail.push_back({ nextRow, nextCol });
 				q.push({ nextRow, nextCol });
+				TeamNumInfo[nextRow][nextCol] = teamNum;
 			}
 		}
 	}
-
+	teamNum++;
 	RailInfo.push_back(nowRail);
 	
 	
@@ -147,6 +158,7 @@ void moveTeam() {
 		for (int dir = 0; dir < 4; dir++) {
 			int nextRow = nowHead.row + dr[dir];
 			int nextCol = nowHead.col + dc[dir];
+			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
 			if (Map[nextRow][nextCol] == 4 || Map[nextRow][nextCol]==3) {
 
 				Map[nowHead.row][nowHead.col] = 2;
@@ -168,6 +180,7 @@ void moveTeam() {
 		for (int dir = 0; dir < 4; dir++) {
 			int nextRow = nowBeforeTail.row + dr[dir];
 			int nextCol = nowBeforeTail.col + dc[dir];
+			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
 			if (Map[nextRow][nextCol] == 2) {
 
 				teamInfo[i].nowBeforeTail.row = nextRow;
@@ -183,36 +196,47 @@ void moveTeam() {
 
 void getScore(pos selected) {
 	
-	//몇번째인지 찾기
-	bool VisitedTemp[21][21] = { false, };
-	queue<pos> q;
-	q.push({ selected });
-	Visited[selected.row][selected.col] = true;
+	int nowTeamNum = TeamNumInfo[selected.row][selected.col];
 	long cnt = 1;
-	while (!q.empty()) {
-		int nowRow = q.front().row;
-		int nowCol = q.front().col;
-		q.pop();
-
-		if (Map[nowRow][nowCol] == 1) {
-			break;
-		}
-
-		for (int dir = 0; dir < 4; dir++) {
-			int nextRow = nowRow + dr[dir];
-			int nextCol = nowCol + dc[dir];
-			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
-			if (Map[nextRow][nextCol] != 2 && Map[nextRow][nextCol] != 1) continue;
-			if (VisitedTemp[nextRow][nextCol]) continue;
-			VisitedTemp[nextRow][nextCol] = true;
-			q.push({ nextRow, nextCol });
-			cnt++;
-		}
+	//몇번째인지 찾기
+	if (Map[selected.row][selected.col] == 3) {
+		cnt = teamInfo[nowTeamNum].memberNum;
 	}
-	
+	else if (Map[selected.row][selected.col] == 2) {
+		bool VisitedTemp[21][21] = { false, };
+		bool endofTeam = true;
+		queue<pos> q;
+		q.push({ teamInfo[nowTeamNum].nowHead.row, teamInfo[nowTeamNum].nowHead.col });
+		Visited[teamInfo[nowTeamNum].nowHead.row][teamInfo[nowTeamNum].nowHead.col] = true;
+
+
+		while (!q.empty()) {
+			int nowRow = q.front().row;
+			int nowCol = q.front().col;
+			q.pop();
+			if (nowRow == selected.row && nowCol == selected.col) {
+				endofTeam = false;
+				break;
+			}
+
+			for (int dir = 0; dir < 4; dir++) {
+				int nextRow = nowRow + dr[dir];
+				int nextCol = nowCol + dc[dir];
+				if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
+				if (Map[nextRow][nextCol] != 2) continue;
+				if (VisitedTemp[nextRow][nextCol]) continue;
+				VisitedTemp[nextRow][nextCol] = true;
+				q.push({ nextRow, nextCol });
+				cnt++;
+			}
+
+		}
+
+		if (endofTeam) cnt++;
+	}
 	Answer += (cnt*cnt);
 
-	int nowTeamNum = TeamNumInfo[selected.row][selected.col];
+	
 	pos nowTail = teamInfo[nowTeamNum].nowTail;
 	pos nowHead = teamInfo[nowTeamNum].nowHead;
 	pos nowBeforeTail = teamInfo[nowTeamNum].nowBeforeTail;
@@ -223,6 +247,7 @@ void getScore(pos selected) {
 	for (int dir = 0; dir < 4; dir++) {
 		int nextRow = nowHead.row + dr[dir];
 		int nextCol = nowHead.col + dc[dir];
+		if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
 		if (Map[nextRow][nextCol] == 2) {
 			teamInfo[nowTeamNum].nowBeforeTail.row = nextRow;
 			teamInfo[nowTeamNum].nowBeforeTail.col = nextCol;
