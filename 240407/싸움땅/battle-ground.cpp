@@ -233,12 +233,15 @@ void solution() {
     for (int k = 0; k < K; k++) {
         for (int p = 1; p <= M; p++) {
             movePlayer(p);
-        }
-        for (int p = 1; p <= M; p++) {
-            cout << PlayerInfo[p].score << " ";
-        }
-        cout << "\n";
+        }    
+        
+        //cout << "\n";
     }
+
+    for (int p = 1; p <= M; p++) {
+        cout << PlayerInfo[p].score << " ";
+    }
+
 
 
 }
