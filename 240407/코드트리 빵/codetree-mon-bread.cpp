@@ -170,7 +170,7 @@ void selectBase() {
 			int nextCol = nowCol + dc[dir];
 			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
 			if (ValidMap[nextRow][nextCol] == -1) continue;
-			if (Visited[nextRow][nextCol] == 1) continue;
+			if (Visited[nextRow][nextCol] != 0) continue;
 			if (Visited[nowRow][nowCol] + 1 > minDist) continue;
 			Visited[nextRow][nextCol] = Visited[nowRow][nowCol] + 1;
 			
@@ -191,8 +191,6 @@ void selectBase() {
 			}
 		}
 	}
-
-
 
 
 	BaseInfo[BaseMap[minBase.row][minBase.col]].valid = false;
