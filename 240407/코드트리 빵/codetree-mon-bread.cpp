@@ -147,6 +147,9 @@ void selectBase() {
 	//	4) 동률인 경우 : 열이 작은 베이스 캠프
 	//	5)******* 베이스캠프는 지나갈 수 없는 칸(평생!)
 
+	int minDist = 300;
+	pos minBase = { 20,20 };
+
 	int id = Time;
 	int storeRow = PersonInfo[id].storePos.row;
 	int storeCol = PersonInfo[id].storePos.col;
@@ -168,22 +171,34 @@ void selectBase() {
 			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
 			if (ValidMap[nextRow][nextCol] == -1) continue;
 			if (Visited[nextRow][nextCol] == 1) continue;
-			Visited[nextRow][nextCol] = 1;
+			if (Visited[nowRow][nowCol] + 1 > minDist) continue;
+			Visited[nextRow][nextCol] = Visited[nowRow][nowCol] + 1;
 			
 			if(BaseMap[nextRow][nextCol]==0) q.push({ nextRow, nextCol });
 			else {
-				BaseInfo[BaseMap[nextRow][nextCol]].valid = false;
-				ValidMap[nextRow][nextCol] = -1;
-				PersonInfo[id].nowPos.row = nextRow;
-				PersonInfo[id].nowPos.col = nextCol;
-				foundBase = true;
+				if (minBase.row > nextRow) {
+					minDist = Visited[nextRow][nextCol];
+					minBase.row = nextRow;
+					minBase.col = nextCol;
+				}
+				else if (minBase.row == nextRow) {
+					if (minBase.col > nextCol) {
+						minBase.row = nextRow;
+						minBase.col = nextCol;
+						minDist = Visited[nextRow][nextCol];
+					}
+				}
 			}
-
-			if (foundBase) break;
-
 		}
-		if (foundBase) break;
 	}
+
+
+
+
+	BaseInfo[BaseMap[minBase.row][minBase.col]].valid = false;
+	ValidMap[minBase.row][minBase.col] = -1;
+	PersonInfo[id].nowPos.row = minBase.row;
+	PersonInfo[id].nowPos.col = minBase.col;
 }
 
 void solution() {
