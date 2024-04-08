@@ -117,8 +117,8 @@ bool LaserAttack(pos attackerPos, pos targetPos) {
 			int nextCol = nowCol + dc[dir];
 			if (nextRow <= 0) nextRow = N;
 			if (nextCol <= 0) nextCol = M;
-			if (nextRow > N) nextRow = 0;
-			if (nextCol > M) nextCol = 0;
+			if (nextRow > N) nextRow = 1;
+			if (nextCol > M) nextCol = 1;
 			//죽은 포탑 못지나감
 			if (TurretMap[nextRow][nextCol].power <= 0) continue;
 			//방문 노드 무시
@@ -174,8 +174,8 @@ void BombAttack(pos attackerPos, pos targetPos) {
 		int nextCol = TargetCol + dc[dir];
 		if (nextRow <= 0) nextRow = N;
 		if (nextCol <= 0) nextCol = M;
-		if (nextRow > N) nextRow = 0;
-		if (nextCol > M) nextCol = 0;
+		if (nextRow > N) nextRow = 1;
+		if (nextCol > M) nextCol = 1;
 
 		if (TurretMap[nextRow][nextCol].power <= 0) continue;
 		if (!TurretMap[nextRow][nextCol].activated) continue;
