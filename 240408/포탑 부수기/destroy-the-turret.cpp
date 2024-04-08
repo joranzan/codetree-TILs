@@ -214,21 +214,16 @@ void solution() {
 	
 	int minRow = 1;
 	int minCol = 1;
-	int maxRow = 1;
-	int maxCol = 1;
+	int maxRow = N;
+	int maxCol = M;
 
 
 	for (int k = 1; k <= K; k++) {
-		//cout << "---------------------------------------------------------------------\n";
-		//cout << k << "번째 턴\n";
-
-		for (int r = 1; r <= N; r++) {
-			for (int c = 1; c <= M; c++) {
-				//cout << TurretMap[r][c].power << " ";
-			}
-			//cout << "\n";
-		}
-
+		
+		int tempminRow = minRow;
+		int tempminCol = minCol;
+		int tempmaxRow = maxRow;
+		int tempmaxCol = maxCol;
 		//cout << "\n";
 
 		//공격자 선정
@@ -238,19 +233,32 @@ void solution() {
 		attacker.power = 2112345678;
 		target.power = -2100000000;
 
-		bool findMin = true;
-		bool findMax = true;
+		bool findMinIndex = false;
+		bool findMaxIndex = false;
 
-		for (int r = 1; r <= N; r++) {
-			for (int c = 1; c <= M; c++) {
+		for (int r = minRow; r <= maxRow; r++) {
+			for (int c = minCol; c <= maxCol; c++) {
 				isChangedMap[r][c] = false;
 				if (!TurretMap[r][c].activated) continue;
 				if (TurretMap[r][c].power <= 0) continue;
+				if (!findMinIndex) {
+					tempminRow = r;
+					tempminCol = c;
+					findMinIndex = true;
+				}
+				tempmaxRow = r;
+				tempmaxCol = c;
+				findMaxIndex = true;
 				if (TurretMap[r][c] < attacker) attacker = TurretMap[r][c];
 				if (target < TurretMap[r][c]) target = TurretMap[r][c];
 			}
 		}
 		
+		tempminRow = minRow;
+		tempminCol = minCol;
+		tempmaxRow = maxRow;
+		tempmaxCol = maxCol;
+
 		if (target.power == -2100000000 || attacker.power == 2112345678) {
 			int debuggging = -1;
 		}
@@ -269,8 +277,8 @@ void solution() {
 		Attack(attacker.nowPos, target.nowPos);
 
 		//죽은 포탑 처리
-		for (int r = 1; r <= N; r++) {
-			for (int c = 1; c <= M; c++) {
+		for (int r = minRow; r <= maxRow; r++) {
+			for (int c = minCol; c <= maxCol; c++) {
 				if (!TurretMap[r][c].activated) continue;
 				if (TurretMap[r][c].power <= 0) {
 					TurretMap[r][c].activated = false;
@@ -281,8 +289,8 @@ void solution() {
 		
 		//cout << "\n정비된 포탑" << "\n";
 		//정비
-		for (int r = 1; r <= N; r++) {
-			for (int c = 1; c <= M; c++) {
+		for (int r = minRow; r <= maxRow; r++) {
+			for (int c = minCol; c <= maxCol; c++) {
 				if (!TurretMap[r][c].activated) continue;
 				if (isChangedMap[r][c]) continue;
 				//cout << "(" << r << ", " << c << ") ";
@@ -297,8 +305,8 @@ void solution() {
 
 	
 
-	for (int r = 1; r <= N; r++) {
-		for (int c = 1; c <= M; c++) {
+	for (int r = minRow; r <= maxRow; r++) {
+		for (int c = minCol; c <= maxCol; c++) {
 			//cout << TurretMap[r][c].power << " ";
 			if (!TurretMap[r][c].activated) continue;
 			Answer = max(Answer, TurretMap[r][c].power);
