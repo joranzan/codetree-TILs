@@ -126,14 +126,17 @@ bool LaserAttack(pos attackerPos, pos targetPos) {
 
 			Visited[nextRow][nextCol] = { nowRow, nowCol };
 			if (nextRow == TargetRow && nextCol == TargetCol) {
-				
+				//cout << "Laser Attack 경로\n";
+				//cout << "(" << nextRow << ", " << nextCol << ") ";
 				int tempRow = nextRow;
 				int tempCol = nextCol;
 				foundPath = true;
 				while (!(tempRow == AttackRow && tempCol == AttackCol)) {
 					int tempnextRow = Visited[tempRow][tempCol].row;
 					int tempnextCol = Visited[tempRow][tempCol].col;
+					//cout << "(" << tempnextRow << ", " << tempnextCol << ") ";
 					if (tempnextRow == AttackRow && tempnextCol == AttackCol) {
+						//cout << "\n";
 						break;
 					}
 					TurretMap[tempnextRow][tempnextCol].power -= (TurretMap[AttackRow][AttackCol].power / 2);
@@ -150,7 +153,7 @@ bool LaserAttack(pos attackerPos, pos targetPos) {
 	}
 
 	if (foundPath) {
-		//cout << "Laser Attack!\n";
+		
 		isChangedMap[AttackRow][AttackCol] = true;
 		isChangedMap[TargetRow][TargetCol] = true;
 		TurretMap[TargetRow][TargetCol].power -= TurretMap[AttackRow][AttackCol].power;
@@ -179,13 +182,15 @@ void BombAttack(pos attackerPos, pos targetPos) {
 
 		if (TurretMap[nextRow][nextCol].power <= 0) continue;
 		if (!TurretMap[nextRow][nextCol].activated) continue;
-
+		if (nextRow == attackerPos.row && nextCol == attackerPos.col) continue;
+		//cout << "(" << nextRow << ", " << nextCol << ") ";
 		TurretMap[nextRow][nextCol].power -= (TurretMap[attackerPos.row][attackerPos.col].power / 2);
 		isChangedMap[nextRow][nextCol] = true;
 	}
 
 	isChangedMap[attackerPos.row][attackerPos.col] = true;
 	isChangedMap[TargetRow][TargetCol] = true;
+	//cout << "(" << TargetRow << ", " << TargetCol << ")\n";
 	TurretMap[TargetRow][TargetCol].power -= TurretMap[attackerPos.row][attackerPos.col].power;
 
 }
@@ -214,6 +219,17 @@ void solution() {
 
 
 	for (int k = 1; k <= K; k++) {
+		//cout << "---------------------------------------------------------------------\n";
+		//cout << k << "번째 턴\n";
+
+		for (int r = 1; r <= N; r++) {
+			for (int c = 1; c <= M; c++) {
+				//cout << TurretMap[r][c].power << " ";
+			}
+			//cout << "\n";
+		}
+
+		//cout << "\n";
 
 		//공격자 선정
 		//공격 대상 선정
@@ -244,6 +260,11 @@ void solution() {
 		//핸디캡 & 공격시기 저장
 		TurretMap[attacker.nowPos.row][attacker.nowPos.col].power += (N + M);
 		TurretMap[attacker.nowPos.row][attacker.nowPos.col].attackTime = k;
+
+		//cout << "공격자 위치: (" << attacker.nowPos.row << ", " << attacker.nowPos.col << ")\n";
+		//cout << "공격대상 위치 : (" << target.nowPos.row << ", " << target.nowPos.col << ")\n";
+		//cout << "공격력 : " << TurretMap[attacker.nowPos.row][attacker.nowPos.col].power << "\n";
+		//cout << "주변 공격력 : " << TurretMap[attacker.nowPos.row][attacker.nowPos.col].power / 2 << "\n";
 		//공격
 		Attack(attacker.nowPos, target.nowPos);
 
@@ -258,23 +279,31 @@ void solution() {
 			}
 		}
 		
+		//cout << "\n정비된 포탑" << "\n";
 		//정비
 		for (int r = 1; r <= N; r++) {
 			for (int c = 1; c <= M; c++) {
 				if (!TurretMap[r][c].activated) continue;
 				if (isChangedMap[r][c]) continue;
+				//cout << "(" << r << ", " << c << ") ";
 				TurretMap[r][c].power++;
 			}
 		}
+
+		//cout << "\n\n\n";
 	}
 
 	int Answer = 0;
 
+	
+
 	for (int r = 1; r <= N; r++) {
 		for (int c = 1; c <= M; c++) {
+			//cout << TurretMap[r][c].power << " ";
 			if (!TurretMap[r][c].activated) continue;
 			Answer = max(Answer, TurretMap[r][c].power);
 		}
+		//cout << "\n";
 	}
 
 	cout << Answer;
