@@ -95,7 +95,7 @@ bool LaserAttack(pos attackerPos, pos targetPos) {
 	//방문 배열 초기화
 	pos Visited[11][11];
 	for (int r = 1; r <= N; r++) {
-		for (int c = 1; c <= N; c++) {
+		for (int c = 1; c <= M; c++) {
 			Visited[r][c].row = -1;
 			Visited[r][c].col = -1;
 		}
@@ -219,8 +219,8 @@ void solution() {
 		//공격 대상 선정
 		turret attacker = TurretMap[0][0];
 		turret target = TurretMap[0][0];
-		attacker.power = 10000;
-		target.power = -10000;
+		attacker.power = 2112345678;
+		target.power = -2100000000;
 
 		bool findMin = true;
 		bool findMax = true;
@@ -235,7 +235,7 @@ void solution() {
 			}
 		}
 		
-		if (target.power == -10000 || attacker.power == 10000) {
+		if (target.power == -2100000000 || attacker.power == 2112345678) {
 			int debuggging = -1;
 		}
 
