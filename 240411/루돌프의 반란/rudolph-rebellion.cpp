@@ -165,7 +165,7 @@ void moveRudolph() {
 
 	int targetSantaID = 2112345678;   //가장 가까운 산타 ID
 	int minDist = 2112345678;
-	int RudolphDir = -1;
+	
 
 
 	//방향 찾기
@@ -175,50 +175,57 @@ void moveRudolph() {
 		int santaRow = SantaInfo[i].nowPos.row;
 		int santaCol = SantaInfo[i].nowPos.col;
 		int nowDist = pow(santaRow - nowRow, 2) + pow(santaCol - nowCol, 2);
-		//	2) 8방향 중 가장 가까워지는 방향으로 한 칸 돌진
-		for (int dir = 0; dir < 8; dir++) {
-			int nextRow = nowRow + dr[dir];
-			int nextCol = nowCol + dc[dir];
-			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
-			int nextDist = pow(santaRow - nextRow, 2) + pow(santaCol - nextCol, 2);
-			//가장 가까워지는 방향으로 돌진
-			if (nextDist >= nowDist) continue;
-			//이전에 찾은 산타의 거리보다 크면 무시
-			if (nextDist > minDist) continue;
-			
-			//아직 산타 못찾았다면
-			if (targetSantaID == 2112345678) {
+		if (minDist < nowDist) continue;
+
+		if (targetSantaID == 2112345678) {
+			targetSantaID = i;
+			minDist = nowDist;
+			continue;
+		}
+		if (nowDist == minDist) {
+			if (santaRow > SantaInfo[targetSantaID].nowPos.row) {
 				targetSantaID = i;
-				minDist = nextDist;
-				RudolphDir = dir;
+				minDist = nowDist;
 			}
-			else {
-				if (nextDist == minDist) {
-					if (santaRow > SantaInfo[targetSantaID].nowPos.row) {
-						targetSantaID = i;
-						minDist = nextDist;
-						RudolphDir = dir;
-					}
-					else if (santaRow == SantaInfo[targetSantaID].nowPos.row) {
-						if (santaCol > SantaInfo[targetSantaID].nowPos.col) {
-							targetSantaID = i;
-							minDist = nextDist;
-							RudolphDir = dir;
-						}
-					}
-				}
-				else {
+			else if (santaRow == SantaInfo[targetSantaID].nowPos.row) {
+				if (santaCol > SantaInfo[targetSantaID].nowPos.col) {
 					targetSantaID = i;
-					minDist = nextDist;
-					RudolphDir = dir;
+					minDist = nowDist;
 				}
 			}
 		}
+		else {
+			targetSantaID = i;
+			minDist = nowDist;
+		}
 	}
 
-	if (targetSantaID == 2112345678 || minDist == 2112345678 || RudolphDir == -1) {
+
+	if (targetSantaID == 2112345678 || minDist == 2112345678) {
 		return;
 	}
+	
+	int RudolphDir = -1;
+
+	int targetRow = SantaInfo[targetSantaID].nowPos.row;
+	int targetCol = SantaInfo[targetSantaID].nowPos.col;
+	int nowDist = 2112345678;
+	//	2) 8방향 중 가장 가까워지는 방향으로 한 칸 돌진
+	for (int dir = 0; dir < 8; dir++) {
+		int nextRow = nowRow + dr[dir];
+		int nextCol = nowCol + dc[dir];
+		if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) continue;
+		int nextDist = pow(targetRow - nextRow, 2) + pow(targetCol - nextCol, 2);
+		//가장 가까워지는 방향으로 돌진
+		if (nextDist > minDist) continue;
+		if (nextDist >= nowDist) continue;
+		//이전에 찾은 산타의 거리보다 크면 무시
+		
+		nowDist = nextDist;
+		RudolphDir = dir;
+	}
+
+	
 
 	//루돌프 이동
 	RudolphInfo.dir = RudolphDir;
@@ -421,7 +428,7 @@ void solution() {
 		//루돌프 움직임 (충돌 및 상호작용 가능)
 		moveRudolph();
 
-		//cout << "이동 후 루돌프의 위치: (" << RudolphInfo.nowPos.row << " " << RudolphInfo.nowPos.col << ")\n\n";
+		// cout << "이동 후 루돌프의 위치: (" << RudolphInfo.nowPos.row << " " << RudolphInfo.nowPos.col << ")\n\n";
 
 
 		// cout << "루돌프 이동 후 산타들의 위치\n";
