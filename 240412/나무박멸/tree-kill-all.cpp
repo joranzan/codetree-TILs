@@ -44,7 +44,7 @@ void growTree() {
 	//1) 인접한 4개의 칸 중 나무가 있는 칸의 수만큼 성장
 	//2)***** 모든 나무가 동시에 일어남
 
-	int tempMap[21][21] = { 0, };
+	//int tempMap[21][21] = { 0, };
 
 	for (int r = 1; r <= N; r++) {
 		for (int c = 1; c <= N; c++) {
@@ -249,17 +249,17 @@ void solution() {
 
 		scatterPoison();
 
-		// int treeLeft = 0;
-		// for (int r = 1; r <= N; r++) {
-		// 	for (int c = 1; c <= N; c++) {
-		// 		if (TreeMap[r][c] < 1) continue;
-		// 		treeLeft++;
-		// 	}
-		// }
+		int treeLeft = 0;
+		for (int r = 1; r <= N; r++) {
+			for (int c = 1; c <= N; c++) {
+				if (TreeMap[r][c] < 1) continue;
+				treeLeft++;
+			}
+		}
 
-		// if (treeLeft == 0) {
-		// 	break;
-		// }
+		if (treeLeft == 0) {
+			break;
+		}
 	}
 	cout << Answer;
 }
