@@ -48,8 +48,11 @@ void growTree() {
 
 	for (int r = 1; r <= N; r++) {
 		for (int c = 1; c <= N; c++) {
+			//만약 벽이거나 나무가 없다면 무시
 			if (TreeMap[r][c] < 1) continue;
-			int cnt = TreeMap[r][c];
+			//현재 나무 개수
+			//int cnt = TreeMap[r][c];
+			int cnt = 0;
 			for (int dir = 0; dir < 4; dir++) {
 				int nextRow = r + tree_dr[dir];
 				int nextCol = c + tree_dc[dir];
@@ -57,16 +60,17 @@ void growTree() {
 				if (TreeMap[nextRow][nextCol] < 1) continue;  //벽이거나 나무 없으면 무시
 				cnt++;
 			}
-			tempMap[r][c] = cnt;
+			//tempMap[r][c] = cnt;
+			TreeMap[r][c] += cnt;
 		}
 	}
 
-	for (int r = 1; r <= N; r++) {
+	/*for (int r = 1; r <= N; r++) {
 		for (int c = 1; c <= N; c++) {
 			if (tempMap[r][c] < 1) continue;
 			TreeMap[r][c] = tempMap[r][c];
 		}
-	}
+	}*/
 
 	//디버깅용
 	// cout << "나무의 성장\n";
@@ -158,6 +162,7 @@ void scatterPoison() {
 	// 20x20x4x20 = O(32000000)
 	for (int r = 1; r <= N; r++) {
 		for (int c = 1; c <= N; c++) {
+			//나무 없거나 벽이면 무시
 			if (TreeMap[r][c] < 1) continue;
 			int cnt = TreeMap[r][c];
 			for (int dir = 0; dir < 4; dir++) {
@@ -165,7 +170,9 @@ void scatterPoison() {
 					int nextRow = r + poison_dr[dir] * k;
 					int nextCol = c + poison_dc[dir] * k;
 					if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) break;
-					if (TreeMap[nextRow][nextCol] < 1) break;
+					if (TreeMap[nextRow][nextCol] < 1) {
+						break;
+					}
 					cnt += TreeMap[nextRow][nextCol];
 				}
 			}
@@ -212,7 +219,10 @@ void scatterPoison() {
 			int nextRow = ResultIndex.row + poison_dr[dir] * k;
 			int nextCol = ResultIndex.col + poison_dc[dir] * k;
 			if (nextRow <= 0 || nextCol <= 0 || nextRow > N || nextCol > N) break;
-			if (TreeMap[nextRow][nextCol] < 1) break;
+			if (TreeMap[nextRow][nextCol] < 1) {
+				PoisonMap[nextRow][nextCol] = C;
+				break;
+			}
 			TreeMap[nextRow][nextCol] = 0;
 			PoisonMap[nextRow][nextCol] = C;
 		}
