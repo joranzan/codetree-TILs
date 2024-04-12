@@ -249,17 +249,17 @@ void solution() {
 
 		scatterPoison();
 
-		int treeLeft = 0;
-		for (int r = 1; r <= N; r++) {
-			for (int c = 1; c <= N; c++) {
-				if (TreeMap[r][c] < 1) continue;
-				treeLeft++;
-			}
-		}
+		// int treeLeft = 0;
+		// for (int r = 1; r <= N; r++) {
+		// 	for (int c = 1; c <= N; c++) {
+		// 		if (TreeMap[r][c] < 1) continue;
+		// 		treeLeft++;
+		// 	}
+		// }
 
-		if (treeLeft == 0) {
-			break;
-		}
+		// if (treeLeft == 0) {
+		// 	break;
+		// }
 	}
 	cout << Answer;
 }
